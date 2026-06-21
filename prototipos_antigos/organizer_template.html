@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizador Visual do Drive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--surface);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        button.success {
+            background-color: var(--success);
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Coluna de Arquivos */
+        .files-column {
+            width: 350px;
+            background-color: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        .files-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .file-card {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .file-card:active {
+            cursor: grabbing;
+        }
+
+        .file-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .file-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .file-path {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Coluna de Pastas */
+        .folders-column {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+        }
+
+        .folders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .folder-card {
+            background-color: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px dashed var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+        }
+
+        .folder-card.drag-over {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary);
+            border-style: solid;
+        }
+
+        .folder-header {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .folder-icon {
+            font-size: 1.25rem;
+        }
+
+        .folder-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .moved-file {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .undo-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 0.25rem;
+        }
+
+        .undo-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .modal {
+            background-color: var(--surface);
+            border-radius: 1rem;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            background-color: var(--bg-color);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>✨ Organizador Visual do Drive</h1>
+        <div class="actions">
+            <button id="auto-btn" onclick="autoSuggest()">🤖 Auto-Sugestão</button>
+            <button id="generate-btn" class="success" onclick="generateScript()">💾 Gerar Script PowerShell</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Coluna de Arquivos Soltos -->
+        <div class="files-column">
+            <div class="column-header">
+                <span>Arquivos Soltos</span>
+                <span class="badge" id="files-count">0</span>
+            </div>
+            <div class="files-list" id="files-list">
+                <!-- Arquivos injetados via JS -->
+            </div>
+        </div>
+
+        <!-- Coluna de Pastas Destino -->
+        <div class="folders-column">
+            <div class="folders-grid" id="folders-grid">
+                <!-- Pastas injetadas via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do Script -->
+    <div class="modal-overlay" id="script-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Revisar e Salvar Script</h2>
+                <button onclick="closeModal()" style="background:none; color:var(--text-muted); padding:0;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                    Revise os comandos de movimentação abaixo. Nenhum arquivo foi movido ainda.
+                    Clique em "Baixar Script" para salvar o arquivo .ps1 e execute-o no PowerShell.
+                </p>
+                <textarea id="script-content" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button style="background-color: var(--surface-hover);" onclick="closeModal()">Cancelar</button>
+                <button class="success" onclick="downloadScript()">📥 Baixar Script (.ps1)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DADOS INJETADOS PELO POWERSHELL ---
+        const INJECTED_DATA = /*DATA_PLACEHOLDER*/ {"files":[], "folders":[]} /*END_PLACEHOLDER*/;
+        // ---------------------------------------
+
+        let files = INJECTED_DATA.files || [];
+        let folders = INJECTED_DATA.folders || [
+            "10_BUSINESS", "20_PERSONAL", "30_STUDY", "40_CREATIVE", "80_GAMES", "90_ARCHIVE", "WORK 💼"
+        ];
+        
+        let movements = {}; // { folderName: [fileObj, ...] }
+
+        // Inicializar
+        function init() {
+            folders.forEach(f => movements[f] = []);
+            renderFiles();
+            renderFolders();
+        }
+
+        function renderFiles() {
+            const list = document.getElementById('files-list');
+            list.innerHTML = '';
+            document.getElementById('files-count').textContent = files.length;
+
+            files.forEach((file, index) => {
+                const el = document.createElement('div');
+                el.className = 'file-card';
+                el.draggable = true;
+                el.dataset.index = index;
+                
+                let icon = '📄';
+                if(file.name.match(/\.(jpg|jpeg|png|gif)$/i)) icon = '🖼️';
+                if(file.name.match(/\.(pdf)$/i)) icon = '📕';
+                if(file.name.match(/\.(zip|rar|7z)$/i)) icon = '📦';
+
+                el.innerHTML = `
+                    <div class="file-name">${icon} ${file.name}</div>
+                    <div class="file-path">${file.path}</div>
+                `;
+
+                el.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', index);
+                    setTimeout(() => el.style.opacity = '0.5', 0);
+                });
+
+                el.addEventListener('dragend', () => {
+                    el.style.opacity = '1';
+                });
+
+                list.appendChild(el);
+            });
+        }
+
+        function renderFolders() {
+            const grid = document.getElementById('folders-grid');
+            grid.innerHTML = '';
+
+            folders.forEach(folder => {
+                const el = document.createElement('div');
+                el.className = 'folder-card';
+                
+                let icon = '📁';
+                if(folder.includes('BUSINESS')) icon = '💼';
+                if(folder.includes('PERSONAL')) icon = '🧑‍💻';
+                if(folder.includes('STUDY')) icon = '📚';
+                if(folder.includes('CREATIVE')) icon = '🎨';
+                if(folder.includes('GAMES')) icon = '🎮';
+                if(folder.includes('ARCHIVE') || folder.includes('Takeout')) icon = '🗄️';
+
+                el.innerHTML = `
+                    <div class="folder-header">
+                        <span class="folder-icon">${icon}</span>
+                        <span>${folder}</span>
+                    </div>
+                    <div class="folder-content" id="folder-${folder}"></div>
+                `;
+
+                // Drag and Drop events
+                el.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    el.classList.add('drag-over');
+                });
+
+                el.addEventListener('dragleave', () => {
+                    el.classList.remove('drag-over');
+                });
+
+                el.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    el.classList.remove('drag-over');
+                    const fileIndex = e.dataTransfer.getData('text/plain');
+                    if (fileIndex !== '') {
+                        moveFile(parseInt(fileIndex), folder);
+                    }
+                });
+
+                grid.appendChild(el);
+                
+                // Render moved files inside this folder
+                const contentDiv = el.querySelector('.folder-content');
+                movements[folder].forEach((file, movedIdx) => {
+                    const item = document.createElement('div');
+                    item.className = 'moved-file';
+                    item.innerHTML = `
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:85%;" title="${file.name}">${file.name}</span>
+                        <button class="undo-btn" onclick="undoMove('${folder}', ${movedIdx})" title="Desfazer">↩️</button>
+                    `;
+                    contentDiv.appendChild(item);
+                });
+            });
+        }
+
+        function moveFile(fileIndex, targetFolder) {
+            const file = files[fileIndex];
+            files.splice(fileIndex, 1);
+            movements[targetFolder].push(file);
+            renderFiles();
+            renderFolders();
+        }
+
+        function undoMove(folder, movedIdx) {
+            const file = movements[folder][movedIdx];
+            movements[folder].splice(movedIdx, 1);
+            files.push(file);
+            renderFiles();
+            renderFolders();
+        }
+
+        function autoSuggest() {
+            // Lógica simples de auto-sugestão
+            const filesCopy = [...files];
+            for (let i = filesCopy.length - 1; i >= 0; i--) {
+                const f = filesCopy[i];
+                const name = f.name.toLowerCase();
+                let target = null;
+
+                if (name.includes('currículo') || name.includes('ctps') || name.includes('rg-digital')) target = '20_PERSONAL';
+                else if (name.includes('whatsapp image') || name.includes('img-')) target = '80_GAMES'; // ou personal
+                else if (name.includes('takeout') || name.includes('drive_')) target = '90_ARCHIVE';
+                else if (name.includes('pesquisa') || name.includes('guia')) target = '30_STUDY';
+                else if (name.includes('associação')) target = '10_BUSINESS';
+
+                if (target && folders.includes(target)) {
+                    const originalIdx = files.indexOf(f);
+                    moveFile(originalIdx, target);
+                }
+            }
+        }
+
+        function generateScript() {
+            let script = "# Script gerado pelo Organizador Visual do Drive\n";
+            script += "# Revise antes de executar\n\n";
+            
+            script += "$ErrorActionPreference = 'Stop'\n\n";
+
+            let hasMoves = false;
+
+            Object.keys(movements).forEach(folder => {
+                const movedFiles = movements[folder];
+                if (movedFiles.length > 0) {
+                    hasMoves = true;
+                    script += `# Movendo para ${folder}\n`;
+                    // Assume base path is G:\Meu Drive\ORGANIZAR ESSA BOMBA
+                    const targetPath = `G:\\Meu Drive\\ORGANIZAR ESSA BOMBA\\${folder}`;
+                    script += `if (!(Test-Path -LiteralPath "${targetPath}")) { New-Item -ItemType Directory -Path "${targetPath}" | Out-Null }\n`;
+                    
+                    movedFiles.forEach(f => {
+                        script += `Move-Item -LiteralPath "${f.fullPath}" -Destination "${targetPath}" -Force\n`;
+                    });
+                    script += `\n`;
+                }
+            });
+
+            if (!hasMoves) {
+                script += "# Nenhum arquivo foi movido.\n";
+            } else {
+                script += "Write-Host 'Organização concluída com sucesso!' -ForegroundColor Green\n";
+            }
+
+            document.getElementById('script-content').value = script;
+            document.getElementById('script-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('script-modal').style.display = 'none';
+        }
+
+        function downloadScript() {
+            const script = document.getElementById('script-content').value;
+            const blob = new Blob([script], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Mover-Arquivos.ps1';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // Run
+        init();
+    </script>
+</body>
+</html>

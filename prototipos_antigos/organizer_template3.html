@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizador Visual do Drive - Miller Columns</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            --surface-active: #0ea5e9;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        header { background-color: var(--surface); padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); z-index: 10; }
+        header h1 { font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+        .actions { display: flex; gap: 1rem; }
+        button { background-color: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 0.5rem; }
+        button:hover { background-color: var(--primary-hover); }
+        button.success { background-color: var(--success); }
+        button.success:hover { background-color: #059669; }
+
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        .panel-header { padding: 1rem; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; justify-content: space-between; align-items: center; background-color: var(--surface); flex-shrink: 0; }
+        .badge { background-color: var(--primary); color: white; padding: 0.1rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; }
+
+        /* Left Panel - Loose Files */
+        .files-panel { width: 320px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background-color: var(--surface); }
+        .files-list { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .file-card { background-color: var(--bg-color); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.75rem; cursor: grab; display: flex; flex-direction: column; gap: 0.25rem; transition: border-color 0.2s, transform 0.2s; }
+        .file-card.is-folder { border-left: 3px solid var(--warning); }
+        .file-card:active { cursor: grabbing; }
+        .file-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .file-name { font-size: 0.85rem; font-weight: 500; word-break: break-all; }
+        .file-path { font-size: 0.65rem; color: var(--text-muted); }
+
+        /* Center Panel - Miller Columns */
+        .miller-panel { flex: 1; display: flex; overflow-x: auto; overflow-y: hidden; background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); }
+        .column { width: 260px; min-width: 260px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background-color: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); }
+        .column-header-dz { padding: 0.75rem; font-size: 0.8rem; font-weight: 500; text-align: center; color: var(--text-muted); border-bottom: 1px dashed var(--border); background-color: rgba(0,0,0,0.2); transition: background-color 0.2s, color 0.2s; }
+        .column-header-dz.drag-over { background-color: rgba(59, 130, 246, 0.2); color: var(--primary); border-color: var(--primary); }
+        .column-list { flex: 1; overflow-y: auto; }
+        .folder-item { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; font-size: 0.9rem; }
+        .folder-item:hover { background-color: var(--surface-hover); }
+        .folder-item.active { background-color: var(--primary); color: white; }
+        .folder-item.drag-over { background-color: rgba(59, 130, 246, 0.4); border-left: 4px solid var(--primary); }
+        .folder-icon-text { display: flex; align-items: center; gap: 0.5rem; }
+        .chevron { color: var(--text-muted); font-size: 0.8rem; }
+        .folder-item.active .chevron { color: white; }
+
+        /* Right Panel - Pending Moves */
+        .moves-panel { width: 300px; border-left: 1px solid var(--border); display: flex; flex-direction: column; background-color: var(--surface); }
+        .moves-list { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .move-card { background-color: var(--bg-color); border: 1px solid var(--primary); border-radius: 0.5rem; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
+        .move-file { font-size: 0.8rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .move-target { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 0.25rem; }
+        .move-actions { display: flex; justify-content: flex-end; margin-top: 0.25rem; }
+        .btn-undo { background: none; border: none; color: var(--danger); font-size: 0.75rem; cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 0.25rem; }
+        .btn-undo:hover { background-color: rgba(239, 68, 68, 0.1); }
+
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 50; }
+        .modal { background-color: var(--surface); border-radius: 1rem; width: 80%; max-width: 800px; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+        .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 1rem; }
+        textarea { width: 100%; height: 300px; background-color: var(--bg-color); color: var(--text); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; font-family: monospace; font-size: 0.875rem; resize: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>✨ Organizador Visual - Miller Columns</h1>
+        <div class="actions">
+            <button id="auto-btn" onclick="autoSuggest()">🤖 Auto-Sugestão Inteligente</button>
+            <button id="generate-btn" class="success" onclick="generateScript()">💾 Gerar Script PowerShell</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Coluna Esquerda: Arquivos -->
+        <div class="files-panel">
+            <div class="panel-header">
+                <span>Itens para Organizar</span>
+                <span class="badge" id="files-count">0</span>
+            </div>
+            <div class="files-list" id="files-list"></div>
+        </div>
+
+        <!-- Coluna Central: Miller Columns -->
+        <div class="miller-panel" id="miller-columns">
+            <!-- Colunas injetadas via JS -->
+        </div>
+
+        <!-- Coluna Direita: Movimentações Pendentes -->
+        <div class="moves-panel">
+            <div class="panel-header">
+                <span>Ações Pendentes</span>
+                <span class="badge" id="moves-count" style="background-color: var(--warning);">0</span>
+            </div>
+            <div class="moves-list" id="moves-list"></div>
+        </div>
+    </div>
+
+    <!-- Modal do Script -->
+    <div class="modal-overlay" id="script-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Revisar e Salvar Script</h2>
+                <button onclick="closeModal()" style="background:none; color:var(--text-muted); padding:0;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                    Revise os comandos abaixo. Nada foi alterado no seu disco ainda.
+                </p>
+                <textarea id="script-content" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button style="background-color: var(--surface-hover);" onclick="closeModal()">Cancelar</button>
+                <button class="success" onclick="downloadScript()">📥 Baixar Script (.ps1)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DADOS INJETADOS PELO POWERSHELL ---
+        // Exemplo fallback se não injetado
+        const INJECTED_DATA = /*DATA_PLACEHOLDER*/ {
+            "files": [], 
+            "folders": []
+        } /*END_PLACEHOLDER*/;
+        // ---------------------------------------
+
+        // Fallbacks de teste caso venha vazio
+        if(INJECTED_DATA.files.length === 0) {
+            INJECTED_DATA.files = [
+                { name: "RG-DIGITAL.pdf", path: "G:\\Meu Drive\\RG-DIGITAL.pdf", fullPath: "G:\\Meu Drive\\RG-DIGITAL.pdf" },
+                { name: "IMG-20260529-WA0002.jpg", path: "G:\\Meu Drive\\IMG-20260529-WA0002.jpg", fullPath: "G:\\Meu Drive\\IMG-20260529-WA0002.jpg" },
+                { name: "Takeout", path: "G:\\Meu Drive\\Takeout", fullPath: "G:\\Meu Drive\\Takeout", isFolder: true },
+                { name: "Currículo Victor Augusto.pdf", path: "G:\\Meu Drive\\Currículo.pdf", fullPath: "G:\\Meu Drive\\Currículo.pdf" }
+            ];
+        }
+        if(INJECTED_DATA.folders.length === 0) {
+            INJECTED_DATA.folders = [
+                "10_BUSINESS", "10_BUSINESS\\Contratos", "20_PERSONAL", "20_PERSONAL\\Documentos", 
+                "30_STUDY", "40_CREATIVE", "80_GAMES", "90_ARCHIVE"
+            ];
+        }
+
+        // Estado global
+        let items = INJECTED_DATA.files.map(f => ({ ...f, id: Math.random().toString(36).substr(2, 9) }));
+        let allFolders = INJECTED_DATA.folders;
+        let pendingMoves = []; // Array of { file: {}, targetPath: string }
+        let activePath = []; // Array of selected folder names ex: ["10_BUSINESS", "Contratos"]
+
+        // Construir a árvore de pastas a partir da lista plana
+        let folderTree = {};
+        function buildTree() {
+            folderTree = {};
+            allFolders.forEach(path => {
+                const parts = path.split('\\');
+                let current = folderTree;
+                parts.forEach(part => {
+                    if (!current[part]) current[part] = {};
+                    current = current[part];
+                });
+            });
+        }
+        buildTree();
+
+        // Inicialização
+        function init() {
+            renderFiles();
+            renderMillerColumns();
+            renderPendingMoves();
+        }
+
+        // --- Renderização de UI ---
+
+        function getIcon(name, isFolder) {
+            if (isFolder) return '📁';
+            if(name.match(/\.(jpg|jpeg|png|gif|svg)$/i)) return '🖼️';
+            if(name.match(/\.(pdf)$/i)) return '📕';
+            if(name.match(/\.(zip|rar|7z)$/i)) return '📦';
+            if(name.match(/\.(doc|docx|gdoc)$/i)) return '📝';
+            if(name.match(/\.(xls|xlsx|gsheet|csv)$/i)) return '📊';
+            return '📄';
+        }
+
+        function getFolderIcon(folderName) {
+            const lower = folderName.toLowerCase();
+            if(lower.includes('business')) return '💼';
+            if(lower.includes('personal')) return '🧑‍💻';
+            if(lower.includes('study')) return '📚';
+            if(lower.includes('creative')) return '🎨';
+            if(lower.includes('games')) return '🎮';
+            if(lower.includes('archive')) return '🗄️';
+            return '📁';
+        }
+
+        function renderFiles() {
+            const list = document.getElementById('files-list');
+            list.innerHTML = '';
+            document.getElementById('files-count').textContent = items.length;
+
+            items.forEach((item) => {
+                const el = document.createElement('div');
+                el.className = 'file-card ' + (item.isFolder ? 'is-folder' : '');
+                el.draggable = true;
+                
+                const icon = getIcon(item.name, item.isFolder);
+
+                el.innerHTML = `
+                    <div class="file-name">${icon} ${item.name}</div>
+                    <div class="file-path">${item.path}</div>
+                `;
+
+                el.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                    setTimeout(() => el.style.opacity = '0.5', 0);
+                });
+
+                el.addEventListener('dragend', () => { el.style.opacity = '1'; });
+                list.appendChild(el);
+            });
+        }
+
+        function renderMillerColumns() {
+            const container = document.getElementById('miller-columns');
+            container.innerHTML = '';
+
+            // Coluna 0 (Raiz)
+            renderColumn(container, folderTree, 0, []);
+
+            // Colunas subsequentes baseadas no activePath
+            let currentTree = folderTree;
+            for (let i = 0; i < activePath.length; i++) {
+                const folderName = activePath[i];
+                currentTree = currentTree[folderName];
+                if (currentTree && Object.keys(currentTree).length > 0) {
+                    const pathToHere = activePath.slice(0, i + 1);
+                    renderColumn(container, currentTree, i + 1, pathToHere);
+                }
+            }
+
+            // Scroll for far right
+            container.scrollLeft = container.scrollWidth;
+        }
+
+        function renderColumn(container, treeNode, depth, currentPathArray) {
+            const col = document.createElement('div');
+            col.className = 'column';
+
+            const folderNames = Object.keys(treeNode).sort();
+            
+            // O caminho real desta coluna (pasta pai)
+            const parentPathString = currentPathArray.join('\\');
+            const dropTitle = depth === 0 ? "Soltar na Raiz do Drive" : `Soltar em ${currentPathArray[currentPathArray.length-1]}`;
+            
+            // Dropzone do cabeçalho (representa soltar na pasta pai)
+            const headerDz = document.createElement('div');
+            headerDz.className = 'column-header-dz';
+            headerDz.innerText = '📥 ' + dropTitle;
+            setupDropZone(headerDz, parentPathString); // Se parentPathString for "", significa que é a raiz (não mapeado no PowerShell usualmente, mas suportamos)
+            col.appendChild(headerDz);
+
+            const list = document.createElement('div');
+            list.className = 'column-list';
+
+            folderNames.forEach(folderName => {
+                const item = document.createElement('div');
+                const isSelected = activePath[depth] === folderName;
+                item.className = 'folder-item ' + (isSelected ? 'active' : '');
+                
+                const hasChildren = Object.keys(treeNode[folderName]).length > 0;
+                const icon = getFolderIcon(folderName);
+                
+                item.innerHTML = `
+                    <div class="folder-icon-text">
+                        <span>${icon}</span>
+                        <span>${folderName}</span>
+                    </div>
+                    ${hasChildren ? '<span class="chevron">▶</span>' : ''}
+                `;
+
+                // Clique para navegar
+                item.addEventListener('click', () => {
+                    activePath = activePath.slice(0, depth);
+                    activePath.push(folderName);
+                    renderMillerColumns();
+                });
+
+                // Dropzone da pasta específica
+                const thisFolderPath = currentPathArray.length > 0 ? `${parentPathString}\\${folderName}` : folderName;
+                setupDropZone(item, thisFolderPath);
+
+                list.appendChild(item);
+            });
+
+            col.appendChild(list);
+            container.appendChild(col);
+        }
+
+        function renderPendingMoves() {
+            const list = document.getElementById('moves-list');
+            list.innerHTML = '';
+            document.getElementById('moves-count').textContent = pendingMoves.length;
+
+            // Inverter para mostrar os mais recentes primeiro
+            [...pendingMoves].reverse().forEach((move, reverseIdx) => {
+                const realIdx = pendingMoves.length - 1 - reverseIdx;
+                const el = document.createElement('div');
+                el.className = 'move-card';
+                const icon = getIcon(move.file.name, move.file.isFolder);
+
+                el.innerHTML = `
+                    <div class="move-file" title="${move.file.name}">${icon} ${move.file.name}</div>
+                    <div class="move-target">➡️ ${move.targetPath}</div>
+                    <div class="move-actions">
+                        <button class="btn-undo" onclick="undoMove(${realIdx})">↩️ Desfazer</button>
+                    </div>
+                `;
+                list.appendChild(el);
+            });
+        }
+
+        // --- Lógica de Drag & Drop e Movimentação ---
+
+        function setupDropZone(el, targetPath) {
+            el.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                el.classList.add('drag-over');
+            });
+            el.addEventListener('dragleave', () => {
+                el.classList.remove('drag-over');
+            });
+            el.addEventListener('drop', (e) => {
+                e.preventDefault();
+                el.classList.remove('drag-over');
+                const fileId = e.dataTransfer.getData('text/plain');
+                if (fileId && targetPath !== "") {
+                    executeMove(fileId, targetPath);
+                }
+            });
+        }
+
+        function executeMove(fileId, targetPath) {
+            const itemIndex = items.findIndex(i => i.id === fileId);
+            if(itemIndex > -1) {
+                const file = items[itemIndex];
+                items.splice(itemIndex, 1);
+                pendingMoves.push({ file, targetPath });
+                renderFiles();
+                renderPendingMoves();
+            }
+        }
+
+        window.undoMove = function(index) {
+            const move = pendingMoves[index];
+            pendingMoves.splice(index, 1);
+            items.push(move.file);
+            renderFiles();
+            renderPendingMoves();
+        };
+
+        // --- Lógica Avançada de Sugestões ---
+
+        window.autoSuggest = function() {
+            // Helpers
+            const findBestFolder = (keyword) => {
+                const lower = keyword.toLowerCase();
+                return allFolders.find(f => f.toLowerCase().includes(lower)) || null;
+            };
+
+            const filesCopy = [...items];
+            let movesMade = 0;
+
+            filesCopy.forEach(f => {
+                const name = f.name.toLowerCase();
+                let target = null;
+
+                // Extrair extensão
+                const extMatch = name.match(/\.([^.]+)$/);
+                const ext = extMatch ? extMatch[1].toLowerCase() : '';
+
+                if (f.isFolder && name.includes('takeout')) {
+                    target = findBestFolder('archive') || findBestFolder('90');
+                }
+                else if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) {
+                    if (name.includes('whatsapp') || name.includes('screenshot') || name.includes('captura')) {
+                        target = findBestFolder('personal') || findBestFolder('archive');
+                    } else {
+                        target = findBestFolder('creative') || findBestFolder('imagens');
+                    }
+                }
+                else if (['pdf', 'docx', 'doc'].includes(ext)) {
+                    if (name.includes('boleto') || name.includes('comprovante') || name.includes('fatura') || name.includes('recibo')) {
+                        target = findBestFolder('business') || findBestFolder('finance');
+                    } else if (name.includes('currículo') || name.includes('rg') || name.includes('cnh') || name.includes('ctps')) {
+                        target = findBestFolder('personal');
+                    } else {
+                        target = findBestFolder('study') || findBestFolder('documentos');
+                    }
+                }
+                else if (['xls', 'xlsx', 'csv'].includes(ext)) {
+                    target = findBestFolder('business');
+                }
+
+                if (target) {
+                    executeMove(f.id, target);
+                    movesMade++;
+                }
+            });
+
+            if (movesMade > 0) {
+                alert(`🤖 Auto-Sugestão organizou ${movesMade} arquivos automaticamente! Verifique a aba de Ações Pendentes.`);
+            } else {
+                alert(`🤖 Nenhuma regra de sugestão correspondeu aos arquivos restantes.`);
+            }
+        };
+
+        // --- Geração de Script ---
+
+        window.generateScript = function() {
+            let script = "# Script gerado pelo Organizador Visual do Drive\n";
+            script += "$ErrorActionPreference = 'Stop'\n\n";
+
+            if (pendingMoves.length === 0) {
+                script += "# Nenhum arquivo foi movido.\n";
+            } else {
+                // Agrupar moves por destino
+                const grouped = {};
+                pendingMoves.forEach(m => {
+                    if(!grouped[m.targetPath]) grouped[m.targetPath] = [];
+                    grouped[m.targetPath].push(m.file);
+                });
+
+                Object.keys(grouped).forEach(targetFolder => {
+                    script += `# Movendo para ${targetFolder}\n`;
+                    // Assume base path is G:\Meu Drive\ORGANIZAR ESSA BOMBA
+                    const targetFullPath = `G:\\Meu Drive\\ORGANIZAR ESSA BOMBA\\${targetFolder}`;
+                    script += `if (!(Test-Path -LiteralPath "${targetFullPath}")) { New-Item -ItemType Directory -Path "${targetFullPath}" -Force | Out-Null }\n`;
+                    
+                    grouped[targetFolder].forEach(file => {
+                        script += `Move-Item -LiteralPath "${file.fullPath}" -Destination "${targetFullPath}" -Force\n`;
+                    });
+                    script += `\n`;
+                });
+                
+                script += "Write-Host 'Organização concluída com sucesso!' -ForegroundColor Green\n";
+            }
+            
+            document.getElementById('script-content').value = script;
+            document.getElementById('script-modal').style.display = 'flex';
+        };
+
+        window.closeModal = function() { document.getElementById('script-modal').style.display = 'none'; };
+
+        window.downloadScript = function() {
+            const script = document.getElementById('script-content').value;
+            const blob = new Blob([script], { type: 'text/plain;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'Mover-Arquivos.ps1';
+            document.body.appendChild(a); a.click();
+            window.URL.revokeObjectURL(url); document.body.removeChild(a);
+        };
+
+        init();
+    </script>
+</body>
+</html>

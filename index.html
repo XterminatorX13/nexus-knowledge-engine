@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Knowledge Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar: Facetas e Navegação -->
+        <aside class="glass-sidebar">
+            <header class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🧠</span>
+                    <h1 class="logo-text">Nexus<span class="highlight">Engine</span></h1>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Buscar... (+tag1 +tag2)" autocomplete="off">
+                </div>
+            </header>
+
+            <!-- Facet Panels -->
+            <div class="facets-container" id="facetsContainer">
+                <!-- Smart Collections -->
+                <div class="facet-group">
+                    <h3 class="facet-title">⚡ Coleções Inteligentes</h3>
+                    <div class="facet-items" id="smartCollections"></div>
+                </div>
+
+                <!-- Domínio (Personality) -->
+                <div class="facet-group">
+                    <h3 class="facet-title">🏷️ Domínio</h3>
+                    <div class="facet-items" id="facetDomain"></div>
+                </div>
+
+                <!-- Formato (Matter) -->
+                <div class="facet-group">
+                    <h3 class="facet-title">📐 Formato</h3>
+                    <div class="facet-items" id="facetFormat"></div>
+                </div>
+
+                <!-- Status (Energy) -->
+                <div class="facet-group">
+                    <h3 class="facet-title">⚙️ Status</h3>
+                    <div class="facet-items" id="facetStatus"></div>
+                </div>
+            </div>
+            
+            <footer class="sidebar-footer">
+                <div class="stats">
+                    <span id="totalItems">0</span> itens catalogados
+                </div>
+                <div class="tree-controls">
+                    <button id="btnClearFilters" title="Limpar Filtros">✕ Limpar</button>
+                </div>
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="glass-main">
+            <header class="main-header">
+                <div class="main-header-top">
+                    <div class="active-filters" id="activeFilters">
+                        <span class="filter-label">Mostrando tudo</span>
+                    </div>
+                    <div class="view-controls">
+                        <button class="view-btn" data-view="list" title="Lista">🪧</button>
+                        <button class="view-btn active" data-view="gallery" title="Galeria">🖼️</button>
+                        <button class="view-btn" data-view="graph" title="Mapa Teia">🌌</button>
+                        
+                        <div class="density-controls" id="densityControls">
+                            <span class="divider"></span>
+                            <button class="density-btn" data-density="compact" title="Compacto">▪</button>
+                            <button class="density-btn active" data-density="comfortable" title="Confortável">◼</button>
+                            <button class="density-btn" data-density="spacious" title="Espaçoso">⬛</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tag-cloud" id="tagCloud">
+                    <!-- Dynamic tag cloud -->
+                </div>
+            </header>
+            
+            <div class="content-preview" id="contentPreview" tabindex="0">
+                <!-- Main content injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Copiado!</div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content glass-modal">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

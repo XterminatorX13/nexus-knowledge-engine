@@ -1,0 +1,506 @@
+{
+  "meta": {
+    "descricao": "Tesauro e Vocabulario Controlado - Nexus Knowledge Engine",
+    "legenda": {
+      "label": "Nome canônico do termo",
+      "sinonimos": "Termos equivalentes (USE/UF) - também conhecido como",
+      "categoria_pai": "Termo mais amplo (BT) - pertence a",
+      "subcategorias": "Termos mais específicos (NT) - contém",
+      "relacionados": "Termos associados (RT) - ver também"
+    }
+  },
+  "termos": {
+    "business": {
+      "label": "Negócios",
+      "sinonimos": [
+        "negócio",
+        "empresa",
+        "comercial",
+        "empreendimento"
+      ],
+      "subcategorias": [
+        "e-commerce",
+        "marketing",
+        "branding",
+        "administrativo"
+      ],
+      "relacionados": [
+        "estudo",
+        "finanças"
+      ]
+    },
+    "e-commerce": {
+      "label": "E-commerce",
+      "sinonimos": [
+        "loja",
+        "loja-virtual",
+        "loja-online",
+        "shop"
+      ],
+      "categoria_pai": "business",
+      "subcategorias": [
+        "shopify",
+        "dropshipping",
+        "dsers"
+      ],
+      "relacionados": [
+        "produtos",
+        "marketing",
+        "precificação"
+      ]
+    },
+    "estudo": {
+      "label": "Estudo",
+      "sinonimos": [
+        "study",
+        "aprendizado",
+        "curso",
+        "tutorial"
+      ],
+      "subcategorias": [
+        "dropshipping",
+        "programação",
+        "concurso"
+      ],
+      "relacionados": [
+        "business"
+      ]
+    },
+    "pessoal": {
+      "label": "Pessoal",
+      "sinonimos": [
+        "personal",
+        "privado"
+      ],
+      "subcategorias": [
+        "saúde",
+        "finanças-pessoais",
+        "documentos-pessoais"
+      ],
+      "relacionados": []
+    },
+    "criativo": {
+      "label": "Criativo",
+      "sinonimos": [
+        "creative",
+        "arte",
+        "design"
+      ],
+      "subcategorias": [
+        "ia-generativa",
+        "fotografia",
+        "edição"
+      ],
+      "relacionados": [
+        "branding",
+        "games"
+      ]
+    },
+    "games": {
+      "label": "Games & Entretenimento",
+      "sinonimos": [
+        "jogos",
+        "entretenimento",
+        "gaming"
+      ],
+      "subcategorias": [
+        "ia-generativa"
+      ],
+      "relacionados": [
+        "criativo"
+      ]
+    },
+    "shopify": {
+      "label": "Shopify",
+      "sinonimos": [
+        "shopify-store"
+      ],
+      "categoria_pai": "e-commerce",
+      "relacionados": [
+        "dsers",
+        "dropshipping",
+        "produtos"
+      ]
+    },
+    "dropshipping": {
+      "label": "Dropshipping",
+      "sinonimos": [
+        "drop",
+        "dsers"
+      ],
+      "categoria_pai": "e-commerce",
+      "relacionados": [
+        "shopify",
+        "produtos",
+        "fornecedores"
+      ]
+    },
+    "obsidian": {
+      "label": "Obsidian",
+      "sinonimos": [
+        "vault",
+        "obsidian-vault"
+      ],
+      "categoria_pai": "ferramentas",
+      "relacionados": [
+        "notas",
+        "markdown",
+        "plugins"
+      ]
+    },
+    "ia-generativa": {
+      "label": "IA Generativa",
+      "sinonimos": [
+        "ai-gen",
+        "inteligência-artificial",
+        "geração-ia"
+      ],
+      "subcategorias": [
+        "pixai",
+        "grok",
+        "chatgpt",
+        "dalle",
+        "midjourney"
+      ],
+      "relacionados": [
+        "criativo",
+        "asset-visual",
+        "prompt"
+      ]
+    },
+    "pixai": {
+      "label": "PixAI",
+      "sinonimos": [
+        "pix-ai"
+      ],
+      "categoria_pai": "ia-generativa",
+      "relacionados": [
+        "asset-visual",
+        "anime"
+      ]
+    },
+    "grok": {
+      "label": "Grok (xAI)",
+      "sinonimos": [],
+      "categoria_pai": "ia-generativa",
+      "relacionados": [
+        "asset-visual"
+      ]
+    },
+    "chatgpt": {
+      "label": "ChatGPT",
+      "sinonimos": [
+        "openai",
+        "gpt"
+      ],
+      "categoria_pai": "ia-generativa",
+      "relacionados": [
+        "prompt",
+        "texto"
+      ]
+    },
+    "google": {
+      "label": "Google",
+      "sinonimos": [
+        "gsheet",
+        "gdoc",
+        "google-drive",
+        "takeout"
+      ],
+      "subcategorias": [
+        "google-sheets",
+        "google-docs"
+      ],
+      "relacionados": [
+        "produtividade"
+      ]
+    },
+    "asset-visual": {
+      "label": "Ativo Visual",
+      "sinonimos": [
+        "imagem",
+        "foto",
+        "visual",
+        "gráfico"
+      ],
+      "subcategorias": [
+        "logo",
+        "banner",
+        "background",
+        "screenshot",
+        "foto-produto"
+      ],
+      "relacionados": [
+        "branding",
+        "e-commerce"
+      ]
+    },
+    "logo": {
+      "label": "Logotipo",
+      "sinonimos": [
+        "logotype",
+        "logomarca",
+        "marca"
+      ],
+      "categoria_pai": "asset-visual",
+      "relacionados": [
+        "branding",
+        "identidade-visual"
+      ]
+    },
+    "banner": {
+      "label": "Banner",
+      "sinonimos": [],
+      "categoria_pai": "asset-visual",
+      "relacionados": [
+        "marketing",
+        "campanha"
+      ]
+    },
+    "screenshot": {
+      "label": "Captura de Tela",
+      "sinonimos": [
+        "captura",
+        "screencapture",
+        "print",
+        "printscreen"
+      ],
+      "categoria_pai": "asset-visual",
+      "relacionados": [
+        "referência"
+      ]
+    },
+    "documento": {
+      "label": "Documento",
+      "sinonimos": [
+        "doc",
+        "texto",
+        "relatório",
+        "planilha"
+      ],
+      "subcategorias": [
+        "contrato",
+        "planilha",
+        "apresentação",
+        "guia"
+      ],
+      "relacionados": [
+        "produtividade"
+      ]
+    },
+    "codigo": {
+      "label": "Código-Fonte",
+      "sinonimos": [
+        "code",
+        "script",
+        "programa",
+        "source"
+      ],
+      "subcategorias": [
+        "manifest",
+        "styles",
+        "config",
+        "plugin"
+      ],
+      "relacionados": [
+        "programação",
+        "obsidian"
+      ]
+    },
+    "audio": {
+      "label": "Áudio",
+      "sinonimos": [
+        "som",
+        "gravação",
+        "podcast"
+      ],
+      "subcategorias": [
+        "recording"
+      ],
+      "relacionados": [
+        "imersão"
+      ]
+    },
+    "beriam": {
+      "label": "BERIAM",
+      "sinonimos": [
+        "beriam-store",
+        "beriam.com"
+      ],
+      "categoria_pai": "e-commerce",
+      "subcategorias": [
+        "beriam-produtos",
+        "beriam-idv",
+        "beriam-campanhas"
+      ],
+      "relacionados": [
+        "shopify",
+        "moda",
+        "decoração"
+      ]
+    },
+    "moda": {
+      "label": "Moda",
+      "sinonimos": [
+        "fashion",
+        "roupa",
+        "vestuário",
+        "clothing"
+      ],
+      "subcategorias": [
+        "vestido",
+        "calça",
+        "blazer",
+        "jaqueta",
+        "camisa",
+        "cinto",
+        "bolsa"
+      ],
+      "relacionados": [
+        "beriam",
+        "e-commerce"
+      ]
+    },
+    "decoracao": {
+      "label": "Decoração",
+      "sinonimos": [
+        "decoração",
+        "casa",
+        "cozinha",
+        "home",
+        "lar",
+        "móveis"
+      ],
+      "subcategorias": [
+        "luminária",
+        "pendente",
+        "mesa"
+      ],
+      "relacionados": [
+        "beriam",
+        "e-commerce"
+      ]
+    },
+    "campanha": {
+      "label": "Campanha Sazonal",
+      "sinonimos": [
+        "sazonal",
+        "promoção"
+      ],
+      "subcategorias": [
+        "black-friday",
+        "natal",
+        "dia-das-mães",
+        "carnaval"
+      ],
+      "relacionados": [
+        "marketing",
+        "e-commerce"
+      ]
+    }
+  },
+  "frequencia_tags": {
+    "codigo": 11018,
+    "obsidian": 4646,
+    "chatgpt": 4445,
+    "imagem": 4263,
+    "antigravity codes": 4067,
+    "jellyfin": 2561,
+    "calyrecall": 2432,
+    "akashic": 2409,
+    "chat completo": 2306,
+    "legacy_notes": 1540,
+    "obsidian old": 1538,
+    "documents": 1483,
+    "obsidian 2026": 1467,
+    "projects": 1200,
+    "chatgpt-pkm": 945,
+    "google": 919,
+    "documento": 700,
+    "games": 473,
+    "fonte": 466,
+    "business": 394,
+    "outros materiais": 317,
+    "beriam": 304,
+    "notas": 223,
+    "pinterest hecayif": 221,
+    "audio": 208,
+    "google ai studio": 194,
+    "produtos": 155,
+    "ai art": 145,
+    "study": 135,
+    "obsidian vault 03-2026": 130,
+    "pixai": 122,
+    "obisdian theme viewer": 99,
+    "dropshipping": 88,
+    "knowledge": 80,
+    "roi lives e vídeos ☕": 78,
+    "moda": 77,
+    "screenshot": 74,
+    "plugins": 71,
+    "code": 52,
+    "products": 46,
+    "dalliance & co": 45,
+    "wallpapers_desktop_final": 45,
+    "inventory": 44,
+    "beriam.com": 40,
+    "logo": 38,
+    "compactado": 37,
+    "programas e recursos": 36,
+    "planilha": 33,
+    "organize later": 33,
+    "decoracao": 23
+  },
+  "smart_collections": {
+    "pendentes-inbox": {
+      "total": 22,
+      "exemplos": [
+        "ORGANIZAR ESSA BOMBA/00_INBOX/IMERSÃO 2026",
+        "ORGANIZAR ESSA BOMBA/00_INBOX/IMERSÃO 2026/Recording_3.m4a",
+        "ORGANIZAR ESSA BOMBA/00_INBOX/IMERSÃO 2026/Recording_4.m4a",
+        "ORGANIZAR ESSA BOMBA/00_INBOX/IMERSÃO 2026/Recording_5.m4a",
+        "ORGANIZAR ESSA BOMBA/00_INBOX/IMERSÃO 2026/Recording_6.m4a"
+      ]
+    },
+    "arquivo-morto": {
+      "total": 1855,
+      "exemplos": [
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/0. ADMINISTRATIVO 📊",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/1. INVENTÁRIO DE LINKS 🔗",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/2. EMPRESAS E PRODUTOS 📦",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/3. OKRS e KPIS ⚙️",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/BERIAM"
+      ]
+    },
+    "pastas-vazias": {
+      "total": 314,
+      "exemplos": [
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/0. ADMINISTRATIVO 📊",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/1. INVENTÁRIO DE LINKS 🔗",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/2. EMPRESAS E PRODUTOS 📦",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/3. OKRS e KPIS ⚙️",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/BERIAM/1. BERIAM/1. LOGO E DESIGN SYSTEM BERIAM/4. ELEMENTOS"
+      ]
+    },
+    "screenshots": {
+      "total": 74,
+      "exemplos": [
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/ARCHIVE/BERIAM/1. BERIAM/2. PRODUTOS/screencapture-dsers-application-import-list-2024-07-13-16_53_04.png",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/Inventory/1. BERIAM.COM  💼/2. MENU/Captura de tela 2024-01-11 000955.png",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/Inventory/1. BERIAM.COM  💼/5. BACKUP - Dsers/Beriam (2.0) screencapture-dsers-application-import-list-2024-07-13-16_53_04.png",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/Inventory/1. BERIAM.COM  💼/5. BACKUP - Dsers/screencapture-dsers-application-import-list-2024-04-12-21_01_55.png",
+        "ORGANIZAR ESSA BOMBA/10_BUSINESS/Inventory/1. BERIAM.COM  💼/5. BACKUP - Dsers/screencapture-dsers-application-import-list-2024-04-12-21_03_15.png"
+      ]
+    },
+    "gerado-por-ia": {
+      "total": 333,
+      "exemplos": [
+        "ORGANIZAR ESSA BOMBA/80_GAMES/1. AI ART 🎨/pixai-lcm_1701400777842.png",
+        "ORGANIZAR ESSA BOMBA/80_GAMES/1. AI ART 🎨/pixai-lcm_1701400854995.png",
+        "ORGANIZAR ESSA BOMBA/80_GAMES/1. AI ART 🎨/pixai-lcm_1701402164519.png",
+        "ORGANIZAR ESSA BOMBA/80_GAMES/1. AI ART 🎨/pixai-lcm_1701402386459.png",
+        "ORGANIZAR ESSA BOMBA/80_GAMES/1. AI ART 🎨/pixai-lcm_1701403016145.png"
+      ]
+    }
+  }
+}
